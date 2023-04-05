@@ -16,8 +16,8 @@ export default function Index({ allPosts }: Props) {
   return (
     <>
       <Layout>
-        <Container>
-          <Header />
+        <Header />
+        <Container>          
           {heroPost && (
             <HeroPost
               title={heroPost.title}

@@ -15,12 +15,12 @@ type Props = {
 
 const PostPreview = ({title,  coverImage,  date,  excerpt,  author,  slug}: Props) => {
   return (
-    <div className='flex items-center gap-10 w-full bg-white p-3 rounded-lg shadow-inner'>
+    <div className='flex flex-col items-center gap-10 w-full bg-white p-3 rounded-lg shadow-inner'>
       <div className="mb-5 w-50 h-50">
         <CoverImage slug={slug} title={title} src={coverImage} />
       </div>
       <div className="flex flex-col justify-between">
-        <h3 className="text-xl mb-3 leading-snug ">
+        <h3 className="mb-3 leading-snug font-semibold">
           <Link
             as={`/posts/${slug}`}
             href="/posts/[slug]"
@@ -29,13 +29,12 @@ const PostPreview = ({title,  coverImage,  date,  excerpt,  author,  slug}: Prop
             {title}
           </Link>
         </h3>
-        <div className="mb-4 text-sm flex items-center gap-6">
+        <div className="mb-4 text-sm flex items-end justify-between px-6">
           <Avatar name={author.name} picture={author.picture} />
           <DateFormatter dateString={date} />
         </div>
         <p className=" leading-relaxed mb-4">{excerpt}</p>
       </div>
-      
     </div>
   )
 }

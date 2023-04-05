@@ -4,12 +4,18 @@ import ReactMarkdown from 'react-markdown'
 import Header from '../components/header'
 import Layout from '../components/layout'
 import remarkGfm from 'remark-gfm'
+import axios from 'axios'
 import { useState, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import Modal from '../components/modal-box'
 
 type Props = {}
 
 export default function Index({ }: Props) {
   const [text, setVal] = useState<string>("")
+  const [sum, setSum] = useState<any>({title:"",excerpt:"",keys:""})
+  const [show, setShow] = useState<boolean>(true)
+
   const pvRef = useRef(null)
   const edRef = useRef(null)
   const upRef = useRef(null)
@@ -23,20 +29,42 @@ export default function Index({ }: Props) {
 
   const upload = (e:any)=>{
     const file = e.target.files[0]
-    console.log(file)
+    // console.log(file)
     if(file.size>500000){
       alert("文件太大请压缩后上传！")
       return
     }
-
+    const data = new FormData() 
+    data.append('file', file)
+    data.append('title', sum.title)
+    axios.post('/api/upload', data).then(res => {
+        // console.log(res.data.file)
+        setVal(text+`![alt text](${res.data.file} "image Title")`)
+    })
   }
+
+  const save = ()=>{
+    axios.post('/api/save',{
+      title:sum.title,
+      excerpt:sum.excerpt,
+      keys:sum.keys,
+      content:text
+    }).then(res=>{
+      console.log(res.data)
+      alert("保存成功！")
+    })
+  }
+
   return (
     <Layout>
       <Container>
         <Header />
+        <div className="w-full text-center pb-3 font-semibold">
+          {sum.title}
+        </div>
         <div className="w-full flex gap-3 p-2 bg-gray-300 border border-blue-600 rounded-t">
           <button className='rounded px-2 py-1 text-sm bg-blue-600 hover:bg-blue-500 text-gray-200 hover:text-white'
-            >保存</button>
+            onClick={save}>保存</button>
           <button className='rounded px-2 py-1 text-sm bg-blue-600 hover:bg-blue-500 text-gray-200 hover:text-white'
             onClick={()=>upRef.current.click()}>插入图片</button>
           <input type="file" accept="image/*" className='hidden' ref={upRef} onChange={upload}/>
@@ -54,12 +82,12 @@ export default function Index({ }: Props) {
             ref={edRef} onScroll={scrollAsync} value={text} onChange={(e)=>setVal(e.target.value)} spellCheck="false">
           </textarea>           
         </div>
+
+        <Modal handleClose={(tt:any)=>{setShow(false);setSum(tt)}} show={show} children={null}/>
       </Container>
     </Layout>
   )
 }
-
-
 
 // markdown 测试内容
 // --------------------------

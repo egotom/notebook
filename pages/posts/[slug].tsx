@@ -53,23 +53,12 @@ export default function Post({ post, morePosts, preview }: Props) {
 }
 
 type Params = {
-  params: {
-    slug: string
-  }
+  params: {slug: string}
 }
 
 export async function getStaticProps({ params }: Params) {
-  const post = getPostBySlug(params.slug, [
-    'title',
-    'date',
-    'slug',
-    'author',
-    'content',
-    'ogImage',
-    'coverImage',
-  ])
+  const post = getPostBySlug(params.slug, ['title','date','slug','author','content','ogImage','coverImage'])
   const content = await markdownToHtml(post.content || '')
-
   return {
     props: {
       post: {
@@ -86,9 +75,7 @@ export async function getStaticPaths() {
   return {
     paths: posts.map((post) => {
       return {
-        params: {
-          slug: post.slug,
-        },
+        params: {slug: post.slug,},
       }
     }),
     fallback: false,
